@@ -4,12 +4,12 @@
 	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
-	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="78534b49-2238-40b2-a1be-5438712487fd" >
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="a2a752b0-e208-43cd-bb29-f15d1ad70629" >
 		<http:listener-connection host="0.0.0.0" port="8081" />
 	</http:listener-config>
-	<flow name="testappFlow" doc:id="7bdf064d-9c58-4f21-a611-ec3773a06356" >
-		<http:listener doc:name="Listener" doc:id="80f5a53f-bcbf-4dcc-9506-536c841c4698" config-ref="HTTP_Listener_config" path="/test"/>
-		<set-payload value="test" doc:name="Set Payload" doc:id="6029f4ba-6dec-461e-a50a-56946bbb9a4a" />
-		<logger level="INFO" doc:name="Logger" doc:id="462c7418-8fff-43f7-b557-4a38de59ac1d" message="#[payload]"/>
+	<flow name="testappFlow" doc:id="093692b3-370a-455b-af5b-ec10f94327a0" >
+		<http:listener doc:name="Listener" doc:id="88d8a3d3-f83f-4df0-9a83-86487050e8be" config-ref="HTTP_Listener_config" path="/test"/>
+		<set-payload value="test" doc:name="Set Payload" doc:id="49ed6d43-468c-466d-9505-f42068291032" />
+		<logger level="INFO" doc:name="Logger" doc:id="3916c795-ecf0-4307-a909-b0c0517c4b8d" message="#[payload]"/>
 	</flow>
 </mule>
