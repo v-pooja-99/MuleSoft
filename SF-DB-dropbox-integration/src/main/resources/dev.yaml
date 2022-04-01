@@ -1,0 +1,33 @@
+httpmain:
+  host: "0.0.0.0"
+  port: "8083"
+
+httpsf:
+  host: "0.0.0.0"
+  port: "8084"
+
+httpdb:
+  host: "0.0.0.0"
+  port: "8082"
+
+db:
+  host: "localhost"
+  port: "3306"
+  user: "root"
+  password: "root"
+  database: "employee"
+  
+sf:
+  user: "pooja.v@veneratesolutions"
+  pwd: "ChaithrA()18"
+  token: "xnfQYgngdGYBw8sJUkBrWTM2"
+
+working:
+  dir: "C:/Users/Acer/Desktop/CSV files"
+  
+api:
+  id: "17509189"
+
+dropbox:
+  token: "R43UGN6dgI4AAAAAAAAAAf2hFhE5_nGbBzu5FdToHCLv-DycjWyavslA8UmYDgjV"
+  app: "MuleSoftUpload"

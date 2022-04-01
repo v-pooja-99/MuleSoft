@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:dropbox="http://www.mulesoft.org/schema/mule/dropbox" xmlns:microsoftOneDrive="http://www.mulesoft.org/schema/mule/microsoftOneDrive"
+	xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway"
+	xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:tls="http://www.mulesoft.org/schema/mule/tls" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd
+http://www.mulesoft.org/schema/mule/microsoftOneDrive http://www.mulesoft.org/schema/mule/microsoftOneDrive/current/mule-microsoftOneDrive.xsd
+http://www.mulesoft.org/schema/mule/dropbox http://www.mulesoft.org/schema/mule/dropbox/current/mule-dropbox.xsd">
+	<http:listener-config name="HTTP_Listener_config_main" doc:name="HTTP Listener config" doc:id="110d7940-0c18-4b0c-a0be-1bb9dd1c1e7e" >
+		<http:listener-connection protocol="HTTPS" host="${httpmain.host}" port="${httpmain.port}" >
+			<tls:context >
+				<tls:key-store type="pkcs12" path="keystore.jks" keyPassword="changeit" password="changeit" />
+			</tls:context>
+		</http:listener-connection>
+	</http:listener-config>
+	<http:listener-config name="HTTP_Listener_config_salesforce" doc:name="HTTP Listener config" doc:id="53e8b336-9402-429c-8ba8-0c71fdaf7d9f" >
+		<http:listener-connection protocol="HTTPS" host="${httpsf.host}" port="${httpsf.port}" >
+			<tls:context >
+				<tls:key-store type="pkcs12" path="keystore.jks" keyPassword="changeit" password="changeit" />
+			</tls:context>
+		</http:listener-connection>
+	</http:listener-config>
+	<salesforce:sfdc-config name="Salesforce_Config" doc:name="Salesforce Config" doc:id="bbd89903-0951-4dee-9250-b71130c624a7" >
+		<salesforce:basic-connection username="${sf.user}" password="${sf.pwd}" securityToken="${sf.token}" />
+	</salesforce:sfdc-config>
+	<http:listener-config name="HTTP_Listener_config_database" doc:name="HTTP Listener config" doc:id="bf9c64c6-5035-49ef-8c8b-548c758f3916" >
+		<http:listener-connection protocol="HTTPS" host="${httpdb.host}" port="${httpdb.port}" >
+			<tls:context >
+				<tls:key-store type="pkcs12" path="keystore.jks" keyPassword="changeit" password="changeit" />
+			</tls:context>
+		</http:listener-connection>
+	</http:listener-config>
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="7efff845-0958-4db1-b9d5-61dbd7f1479d" >
+		<db:my-sql-connection host="${db.host}" port="${db.port}" user="${db.user}" password="${db.password}" database="${db.database}" />
+	</db:config>
+	<http:request-config name="HTTP_Request_configuration_salesforce" doc:name="HTTP Request configuration" doc:id="8335d67f-c96e-4405-b7d2-78841c30558c" >
+		<http:request-connection protocol="HTTPS" host="localhost" port="8084" >
+			<tls:context >
+				<tls:trust-store path="keystore.jks" password="changeit" type="pkcs12" insecure="true" />
+			</tls:context>
+		</http:request-connection>
+	</http:request-config>
+	<http:request-config name="HTTP_Request_configuration_database" doc:name="HTTP Request configuration" doc:id="0450d0f3-ff4b-4ce1-9361-9d13b2281483" >
+		<http:request-connection protocol="HTTPS" host="localhost" port="8082" >
+			<tls:context >
+				<tls:trust-store path="keystore.jks" password="changeit" type="pkcs12" insecure="true" />
+			</tls:context>
+		</http:request-connection>
+	</http:request-config>
+	<file:config name="File_Config" doc:name="File Config" doc:id="7ba7c476-8efd-4c5f-956b-2f2192253ae8" >
+		<file:connection workingDir="${working.dir}" />
+	</file:config>
+	<api-gateway:autodiscovery apiId="${api.id}" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="b81ae13c-70d4-4350-8fcb-3771bffe62e2" flowRef="MainFlow" />
+	<dropbox:config name="Dropbox_User_Configuration" doc:name="Dropbox User Configuration" doc:id="bb0fd371-3759-4c83-9dca-0b7356ff0d69" >
+		<dropbox:connection accessToken="${dropbox.token}" appName="${dropbox.app}" />
+	</dropbox:config>
+	<configuration-properties doc:name="Configuration properties" doc:id="d132a547-dd07-4944-92d6-04d41b8c7194" file="dev.yaml" />
+	<flow name="SalesForceFlow" doc:id="93b81abf-e19d-4fda-95a9-f4f14a76b27e" >
+		<http:listener doc:name="Listener SF" doc:id="b1458641-c21a-4f62-ab2a-e61957d1642e" config-ref="HTTP_Listener_config_salesforce" path="/salesforce"/>
+		<salesforce:query doc:name="Query Account Details" doc:id="38d3d970-9486-403e-b738-79b24e6e1a5b" config-ref="Salesforce_Config">
+			<salesforce:salesforce-query ><![CDATA[SELECT Id, Name FROM Account]]></salesforce:salesforce-query>
+		</salesforce:query>
+		<ee:transform doc:name="Set Response" doc:id="ed1fa2a2-7977-419e-a75f-6cd59d762119" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map{
+	"id": $.Id,
+	"name": $.Name
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="DatabaseFlow" doc:id="988bd337-bf77-41b3-a51e-0f23ba213219" >
+		<http:listener doc:name="Listener DB" doc:id="e41448c5-b841-4f86-8109-5a9291b99fd3" config-ref="HTTP_Listener_config_database" path="/database"/>
+		<db:select doc:name="Select Employee Records" doc:id="66ae788e-3228-4009-8904-432f880dca3f" config-ref="Database_Config">
+			<db:sql ><![CDATA[Select * from employee;]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Set properly" doc:id="c893ee61-b7d4-4f5b-8908-f495051beae4" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map{
+	"id": $.id,
+	"name": $.name
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="MainFlow" doc:id="e0c3d328-a68b-4f50-a482-21c50b1d2e33" >
+		<http:listener doc:name="Listener main" doc:id="f51de0f9-673e-4924-8887-089d411311c9" config-ref="HTTP_Listener_config_main" path="calling"/>
+		<scatter-gather doc:name="Request Salesforce and Database" doc:id="143c8386-f725-46ee-a8ef-0ad12caf34ef" >
+			<route >
+				<try doc:name="Try" doc:id="8e9ed338-331c-4183-bc8a-d66df9fdcf77" >
+					<http:request method="GET" doc:name="Request Salesforce" doc:id="3fec8965-81a0-4a6a-b0f2-fc5fdcf5873d" path="/salesforce" config-ref="HTTP_Request_configuration_salesforce" />
+					<error-handler >
+						<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="b780cd85-232e-45af-9368-b5c176a4232a" type="ANY">
+							<ee:transform doc:name="Set Response" doc:id="19a657b8-eb06-4cb9-940c-1c73c9a26a48" >
+								<ee:message >
+									<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"Salesforce Response": "Unable to request salesforce api"
+}]]></ee:set-payload>
+								</ee:message>
+							</ee:transform>
+						</on-error-continue>
+					</error-handler>
+				</try>
+			</route>
+			<route >
+				<try doc:name="Try" doc:id="00fc6f2d-0d28-4b09-bb90-8a008a797caf">
+					<http:request method="GET" doc:name="Request Database" doc:id="9d85c943-3d9a-4aae-98e4-c939c1d7cf84" path="/database" config-ref="HTTP_Request_configuration_database" />
+					<error-handler >
+						<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="acd6845f-365f-404a-99cb-e774d3174fb9" type="ANY">
+							<ee:transform doc:name="Set Response" doc:id="1909beed-463f-43e2-a29f-d85d3bc7d0bb" >
+								<ee:message >
+									<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"Database Response": "Unable to request database api"
+}]]></ee:set-payload>
+								</ee:message>
+							</ee:transform>
+						</on-error-continue>
+					</error-handler>
+				</try>
+			</route>
+		</scatter-gather>
+		<ee:transform doc:name="Transform Responses" doc:id="c20bba9b-a5f9-45ec-99a2-05428b95ee43" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"Salesforce": payload."0".payload,
+	"Database": payload."1".payload
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Log Final Payload" doc:id="49ce8bbb-c118-4c89-979f-6ebcf70381e7" message="final payload = #[payload]"/>
+		<file:write doc:name="Write into payloadFile.txt" doc:id="4bb13d7e-a6bc-4f1e-908b-a6cd011eeee9" config-ref="File_Config" path="C:\Users\Acer\Desktop\CSV files\payloadFile.txt" mode="CREATE_NEW">
+		</file:write>
+		<dropbox:upload-file doc:name="Upload file into Dropbox" doc:id="8f2ab607-0300-413d-b003-a42007aebf3e" config-ref="Dropbox_User_Configuration" path="/mulesoft"/>
+		<ee:transform doc:name="Set Response" doc:id="067bc353-1f1e-4a96-b944-4cd0b664045a" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"Message": "Uploaded Successfully"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>
